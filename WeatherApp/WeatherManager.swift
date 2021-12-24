@@ -63,7 +63,8 @@ struct WeatherManager {
             let hourlyTemp: [Double] = decodedData.hourly.map { $0.temp }
             let dailyDT: [Int] = decodedData.daily.map { $0.dt }
             let daylyID: [Int] = decodedData.daily.map { $0.weather[0].id }
-            let weather = WeatherModel(temperature, sunrise, sunset, feelsLike, pressure, humidity, visibility, windSpeed, dailyMin, dailyMax, description, hourlyID, hourlyDT, hourlyTemp, dailyDT, daylyID)
+            let timeZoneOffset = decodedData.timezone_offset
+            let weather = WeatherModel(temperature, sunrise, sunset, feelsLike, pressure, humidity, visibility, windSpeed, dailyMin, dailyMax, description, hourlyID, hourlyDT, hourlyTemp, dailyDT, daylyID, timeZoneOffset)
             return weather
         }
         catch {

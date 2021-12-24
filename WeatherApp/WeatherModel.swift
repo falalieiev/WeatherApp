@@ -35,8 +35,9 @@ struct WeatherModel {
     let dailyMax: [Double]
     let dailyDT: [Int]
     let dailyID: [Int]
+    let timeZoneOffset: Int
     
-    init(_ temperature: Double, _ sunrise: Int, _ sunset: Int, _ feelsLike: Double, _ pressure: Int, _ humidity: Int, _ visibility: Int, _ windSpeed: Double, _ dailyMin: [Double], _ dailyMax: [Double], _ description: String, _ hourlyID: [Int], _ hourlyDT: [Int], _ hourlyTemp: [Double], _ dailyDT: [Int], _ dailyID: [Int]){
+    init(_ temperature: Double, _ sunrise: Int, _ sunset: Int, _ feelsLike: Double, _ pressure: Int, _ humidity: Int, _ visibility: Int, _ windSpeed: Double, _ dailyMin: [Double], _ dailyMax: [Double], _ description: String, _ hourlyID: [Int], _ hourlyDT: [Int], _ hourlyTemp: [Double], _ dailyDT: [Int], _ dailyID: [Int], _ timeZoneOffset: Int){
         self.temperature = temperature
         self.sunrise = sunrise
         self.sunset = sunset
@@ -53,6 +54,7 @@ struct WeatherModel {
         self.hourlyTemp = hourlyTemp
         self.dailyDT = dailyDT
         self.dailyID = dailyID
+        self.timeZoneOffset = timeZoneOffset
     }
     
     var temperatureString: String {
@@ -87,6 +89,7 @@ struct WeatherModel {
         let date = Date(timeIntervalSince1970: TimeInterval(sunrise))
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
+        dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: timeZoneOffset) as TimeZone
         let sunriseString = dateFormatter.string(from: date)
         return sunriseString
     }
@@ -95,6 +98,7 @@ struct WeatherModel {
         let date = Date(timeIntervalSince1970: TimeInterval(sunset))
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
+        dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: timeZoneOffset) as TimeZone
         let sunsetString = dateFormatter.string(from: date)
         return sunsetString
     }

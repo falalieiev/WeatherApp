@@ -17,22 +17,41 @@ class ViewController: UIViewController, WeatherManagerDelegate, CLLocationManage
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "weeklyWeather", for: indexPath) as! WeeklyCell
         if dailyMax.isEmpty == false {
-            let min = String(format: "%.0f", dailyMin[indexPath.row])
-            let minSign = "Мин: \(min)°"
-            let max = String(format: "%.0f", dailyMax[indexPath.row])
-            let maxSign = "Макс: \(max)°"
-            cell.maxMinTemp.text = minSign
-            cell.minMaxTemp.text = maxSign
-            
-            cell.conditionLabel.image = UIImage(systemName: weatherConditions.getWeatherCondition(id: dailyID[indexPath.row]))
-            
             if indexPath.row == 0 {
-                cell.dayLabel.text = "Сегодня"
+                cell.conditionLabel.image = .none
+                cell.dayLabel.text = ""
+                cell.minMaxTemp.text = ""
+                cell.maxMinTemp.text = ""
+                
+                let imageAttachment = NSTextAttachment()
+                imageAttachment.image = UIImage(systemName: "calendar")?.withTintColor(.gray)
+                let imageOffsetY: CGFloat = -2.5
+                imageAttachment.bounds = CGRect(x: 0, y: imageOffsetY, width: imageAttachment.image!.size.width, height: imageAttachment.image!.size.height)
+                let attachmentString = NSAttributedString(attachment: imageAttachment)
+                let completeText = NSMutableAttributedString(string: "")
+                completeText.append(attachmentString)
+                let textAfterIcon = NSAttributedString(string: "Прогноз на неделю")
+                completeText.append(textAfterIcon)
+                
+                cell.textLabel?.textColor = .gray
+                cell.textLabel?.font = .boldSystemFont(ofSize: 17)
+                cell.textLabel?.attributedText = completeText
             } else {
+                //tableView.rowHeight = 44
+                cell.textLabel?.attributedText = nil
+                let min = String(format: "%.0f", dailyMin[indexPath.row])
+                let minSign = "Мин: \(min)°"
+                let max = String(format: "%.0f", dailyMax[indexPath.row])
+                let maxSign = "Макс: \(max)°"
+                cell.maxMinTemp.text = minSign
+                cell.minMaxTemp.text = maxSign
+                cell.conditionLabel.image = UIImage(systemName: weatherConditions.getWeatherCondition(id: dailyID[indexPath.row]))
+                
                 let date = Date(timeIntervalSince1970: TimeInterval(dailyDT[indexPath.row]))
                 let dateFormatter = DateFormatter()
                 dateFormatter.locale = Locale(identifier: "ru_RU")
                 dateFormatter.dateFormat = "E"
+                dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: timeZoneOffset) as TimeZone
                 let dayString = dateFormatter.string(from: date)
                 cell.dayLabel.text = dayString
             }
@@ -59,6 +78,7 @@ class ViewController: UIViewController, WeatherManagerDelegate, CLLocationManage
                 let date = Date(timeIntervalSince1970: TimeInterval(hourlyDT[indexPath.row]))
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "HH"
+                dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: timeZoneOffset) as TimeZone
                 let sunriseString = dateFormatter.string(from: date)
                 cell.timeLabel.text = sunriseString
             }
@@ -93,6 +113,7 @@ class ViewController: UIViewController, WeatherManagerDelegate, CLLocationManage
     private var dailyMin: [Double] = []
     private var dailyDT: [Int] = []
     private var dailyID: [Int] = []
+    private var timeZoneOffset: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -106,7 +127,8 @@ class ViewController: UIViewController, WeatherManagerDelegate, CLLocationManage
         locationManager.startUpdatingLocation()
         didFindLocation = false
         hourlyWeatherCollection.register(UICollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerView")
-        heightConstraint.constant = 352
+        heightConstraint.constant = 341
+        tableView.isUserInteractionEnabled = false
     }
     
     @IBAction func searchForCityButtonPressed(_ sender: UIButton) {
@@ -137,6 +159,7 @@ class ViewController: UIViewController, WeatherManagerDelegate, CLLocationManage
         dailyMin = weather.dailyMin
         dailyDT = weather.dailyDT
         dailyID = weather.dailyID
+        timeZoneOffset = weather.timeZoneOffset
         tableView.reloadData()
         hourlyWeatherCollection.reloadData()
     }
@@ -194,11 +217,20 @@ extension ViewController: GMSAutocompleteViewControllerDelegate {
 }
 
 extension ViewController: UICollectionViewDelegateFlowLayout {
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 65, height: 80)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets{
         return UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == 0 {
+            return 34.0
+        } else {
+            return 44.0
+        }
     }
 }
