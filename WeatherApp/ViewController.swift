@@ -11,52 +11,74 @@ import CoreLocation
 
 class ViewController: UIViewController, WeatherManagerDelegate, CLLocationManagerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 8
+        if tableView == self.tableView {
+            return 8
+        } else {
+            return 1
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "weeklyWeather", for: indexPath) as! WeeklyCell
-        if dailyMax.isEmpty == false {
-            if indexPath.row == 0 {
-                cell.conditionLabel.image = .none
-                cell.dayLabel.text = ""
-                cell.minMaxTemp.text = ""
-                cell.maxMinTemp.text = ""
-                
-                let imageAttachment = NSTextAttachment()
-                imageAttachment.image = UIImage(systemName: "calendar")?.withTintColor(.gray)
-                let imageOffsetY: CGFloat = -2.5
-                imageAttachment.bounds = CGRect(x: 0, y: imageOffsetY, width: imageAttachment.image!.size.width, height: imageAttachment.image!.size.height)
-                let attachmentString = NSAttributedString(attachment: imageAttachment)
-                let completeText = NSMutableAttributedString(string: "")
-                completeText.append(attachmentString)
-                let textAfterIcon = NSAttributedString(string: "Прогноз на неделю")
-                completeText.append(textAfterIcon)
-                
-                cell.textLabel?.textColor = .gray
-                cell.textLabel?.font = .boldSystemFont(ofSize: 17)
-                cell.textLabel?.attributedText = completeText
-            } else {
-                //tableView.rowHeight = 44
-                cell.textLabel?.attributedText = nil
-                let min = String(format: "%.0f", dailyMin[indexPath.row])
-                let minSign = "Мин: \(min)°"
-                let max = String(format: "%.0f", dailyMax[indexPath.row])
-                let maxSign = "Макс: \(max)°"
-                cell.maxMinTemp.text = minSign
-                cell.minMaxTemp.text = maxSign
-                cell.conditionLabel.image = UIImage(systemName: weatherConditions.getWeatherCondition(id: dailyID[indexPath.row]))
-                
-                let date = Date(timeIntervalSince1970: TimeInterval(dailyDT[indexPath.row]))
-                let dateFormatter = DateFormatter()
-                dateFormatter.locale = Locale(identifier: "ru_RU")
-                dateFormatter.dateFormat = "E"
-                dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: timeZoneOffset) as TimeZone
-                let dayString = dateFormatter.string(from: date)
-                cell.dayLabel.text = dayString
+        if tableView == self.tableView {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "weeklyWeather", for: indexPath) as! WeeklyCell
+            if dailyMax.isEmpty == false {
+                if indexPath.row == 0 {
+                    cell.conditionLabel.image = .none
+                    cell.dayLabel.text = ""
+                    cell.minMaxTemp.text = ""
+                    cell.maxMinTemp.text = ""
+                    
+                    let imageAttachment = NSTextAttachment()
+                    imageAttachment.image = UIImage(systemName: "calendar")?.withTintColor(.lightGray)
+                    let imageOffsetY: CGFloat = -2.5
+                    imageAttachment.bounds = CGRect(x: 0, y: imageOffsetY, width: imageAttachment.image!.size.width, height: imageAttachment.image!.size.height)
+                    let attachmentString = NSAttributedString(attachment: imageAttachment)
+                    let completeText = NSMutableAttributedString(string: "")
+                    completeText.append(attachmentString)
+                    let textAfterIcon = NSAttributedString(string: "Прогноз на неделю")
+                    completeText.append(textAfterIcon)
+                    
+                    cell.textLabel?.textColor = .lightGray
+                    cell.textLabel?.font = .systemFont(ofSize: 17)
+                    cell.textLabel?.attributedText = completeText
+                } else {
+                    //tableView.rowHeight = 44
+                    cell.textLabel?.attributedText = nil
+                    let min = String(format: "%.0f", dailyMin[indexPath.row])
+                    let minSign = "Мин: \(min)°"
+                    let max = String(format: "%.0f", dailyMax[indexPath.row])
+                    let maxSign = "Макс: \(max)°"
+                    cell.maxMinTemp.text = minSign
+                    cell.minMaxTemp.text = maxSign
+                    cell.conditionLabel.image = UIImage(systemName: weatherConditions.getWeatherCondition(id: dailyID[indexPath.row]))
+                    
+                    let date = Date(timeIntervalSince1970: TimeInterval(dailyDT[indexPath.row]))
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.locale = Locale(identifier: "ru_RU")
+                    dateFormatter.dateFormat = "E"
+                    dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: timeZoneOffset) as TimeZone
+                    let dayString = dateFormatter.string(from: date)
+                    cell.dayLabel.text = dayString
+                }
             }
+            return cell
+        } else {
+            let infoCell = infoTableView.dequeueReusableCell(withIdentifier: "info", for: indexPath)
+            let imageAttachment = NSTextAttachment()
+            imageAttachment.image = UIImage(systemName: "clock")?.withTintColor(.lightGray)
+            let imageOffsetY: CGFloat = -2.5
+            imageAttachment.bounds = CGRect(x: 0, y: imageOffsetY, width: imageAttachment.image!.size.width, height: imageAttachment.image!.size.height)
+            let attachmentString = NSAttributedString(attachment: imageAttachment)
+            let completeText = NSMutableAttributedString(string: "")
+            completeText.append(attachmentString)
+            let textAfterIcon = NSAttributedString(string: "Прогноз на 24 часа")
+            completeText.append(textAfterIcon)
+            
+            infoCell.textLabel?.textColor = .lightGray
+            infoCell.textLabel?.font = .systemFont(ofSize: 17)
+            infoCell.textLabel?.attributedText = completeText
+            return infoCell
         }
-        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -100,7 +122,7 @@ class ViewController: UIViewController, WeatherManagerDelegate, CLLocationManage
     @IBOutlet weak var currentTempLabel: UILabel!
     @IBOutlet weak var hourlyWeatherCollection: UICollectionView!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var infoTableView: UITableView!
     
     private let weatherConditions = WeatherConditions()
     private var weatherManager = WeatherManager()
@@ -117,18 +139,11 @@ class ViewController: UIViewController, WeatherManagerDelegate, CLLocationManage
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        hourlyWeatherCollection.delegate = self
-        hourlyWeatherCollection.dataSource = self
-        tableView.delegate = self
-        tableView.dataSource = self
         weatherManager.delegate = self
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         didFindLocation = false
-        hourlyWeatherCollection.register(UICollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerView")
-        heightConstraint.constant = 341
-        tableView.isUserInteractionEnabled = false
     }
     
     @IBAction func searchForCityButtonPressed(_ sender: UIButton) {
@@ -227,10 +242,15 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.row == 0 {
-            return 34.0
+        if tableView == self.tableView {
+            if indexPath.row == 0 {
+                return 34.0
+            } else {
+                return 44.0
+            }
         } else {
-            return 44.0
+            print("df")
+            return 34.0
         }
     }
 }
