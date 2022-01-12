@@ -13,4 +13,14 @@ class HourlyWeatherCell: UICollectionViewCell {
     @IBOutlet weak var conditionImage: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
     
+    func configureCell(_ model: WeatherForecast?,
+                       _ indexPath: Int,
+                       _ weatherConition: WeatherConditions) {
+        
+        if let weather = model {
+            temperatureLabel.text = weather.hourlyForecast.temperature[indexPath].getTemp("")
+            conditionImage.image = weatherConition.getWeatherCondition(id: weather.hourlyForecast.conditionID[indexPath])
+            timeLabel.text = weather.hourlyForecast.time[indexPath].getData(weather.currentForecast.timezoneOffset, "HH")
+        }
+    }
 }

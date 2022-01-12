@@ -14,7 +14,7 @@ class CityCell: UITableViewCell {
     @IBOutlet weak var currentTempLabel: UILabel!
     @IBOutlet weak var currentPlaceLabel: UILabel!
     @IBOutlet weak var currentTime: UILabel!
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
@@ -24,7 +24,7 @@ class CityCell: UITableViewCell {
             return super.frame
         }
         set (newFrame) {
-            var frame =  newFrame
+            var frame = newFrame
             frame.size.height -= 10
             super.frame = frame
         }
@@ -32,6 +32,7 @@ class CityCell: UITableViewCell {
 
     override open func awakeFromNib() {
         super.awakeFromNib()
+
         layer.cornerRadius = 9
         layer.masksToBounds = false
     }

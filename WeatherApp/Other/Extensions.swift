@@ -8,6 +8,7 @@
 import UIKit
 
 extension UIImage {
+    
     func resizeImage(targetSize: CGSize) -> UIImage {
         // Determine the scale factor that preserves aspect ratio
         let widthRatio = targetSize.width / size.width
@@ -38,6 +39,7 @@ extension UIImage {
 }
 
 extension WeeklyCell {
+    
     func getWeeklyHeader() {
     self.conditionLabel.image = .none
     self.dayLabel.text = ""
@@ -61,6 +63,7 @@ extension WeeklyCell {
 }
 
 extension UITableViewCell {
+    
     func getHourlyHeader() {
         let imageAttachment = NSTextAttachment()
         imageAttachment.image = UIImage(systemName: "clock")?.withTintColor(.lightGray)
@@ -89,6 +92,7 @@ extension String {
 }
 
 extension Double {
+    
     func getTemp(_ type: String) -> String{
         let number = String(format: "%.0f", self)
         return "\(type)\(number)°"
@@ -105,6 +109,7 @@ extension Double {
 }
 
 extension Int {
+    
     func getData(_ timeoffset: Int, _ dateFormat: String) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(self))
         let dateFormatter = DateFormatter()
@@ -113,5 +118,13 @@ extension Int {
         dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: timeoffset) as TimeZone
         return dateFormatter.string(from: date)
     }
+    
+    func getSunTimeString(_ timezoneOffset: Int) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(self))
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: timezoneOffset) as TimeZone
+        let sunString = dateFormatter.string(from: date)
+        return sunString
+    }
 }
-

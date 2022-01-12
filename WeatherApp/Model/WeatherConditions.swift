@@ -8,6 +8,7 @@
 import UIKit
 
 struct WeatherConditions {
+    
     func getWeatherCondition(id: Int) -> UIImage? {
         switch id {
         case 200...232:
