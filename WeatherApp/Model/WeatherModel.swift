@@ -5,29 +5,19 @@
 //  Created by Oleh Falalieiev on 21.12.2021.
 //
 
-extension String {
-    func capitalizingFirstLetter() -> String {
-        return prefix(1).uppercased() + self.lowercased().dropFirst()
-    }
-    
-    mutating func capitalizeFirstLetter() {
-        self = self.capitalizingFirstLetter()
-    }
-}
-
 import Foundation
-import UIKit
 
 struct WeatherModel {
-    private let temperature: Double
-    private let sunrise: Int
-    private let sunset: Int
-    private let feelsLike: Double
-    private let pressure: Int
-    private let humidity: Int
-    private let visibility: Int
-    private let windSpeed: Double
-    private let description: String
+
+    let temperature: Double
+    let sunrise: Int
+    let sunset: Int
+    let feelsLike: Double
+    let pressure: Int
+    let humidity: Int
+    let visibility: Int
+    let windSpeed: Double
+    let description: String?
     let hourlyID: [Int]
     let hourlyDT: [Int]
     let hourlyTemp: [Double]
@@ -36,26 +26,7 @@ struct WeatherModel {
     let dailyDT: [Int]
     let dailyID: [Int]
     let timeZoneOffset: Int
-    
-    init(_ temperature: Double, _ sunrise: Int, _ sunset: Int, _ feelsLike: Double, _ pressure: Int, _ humidity: Int, _ visibility: Int, _ windSpeed: Double, _ dailyMin: [Double], _ dailyMax: [Double], _ description: String, _ hourlyID: [Int], _ hourlyDT: [Int], _ hourlyTemp: [Double], _ dailyDT: [Int], _ dailyID: [Int], _ timeZoneOffset: Int){
-        self.temperature = temperature
-        self.sunrise = sunrise
-        self.sunset = sunset
-        self.feelsLike = feelsLike
-        self.pressure = pressure
-        self.humidity = humidity
-        self.visibility = visibility
-        self.windSpeed = windSpeed
-        self.dailyMin = dailyMin
-        self.dailyMax = dailyMax
-        self.description = description
-        self.hourlyID = hourlyID
-        self.hourlyDT = hourlyDT
-        self.hourlyTemp = hourlyTemp
-        self.dailyDT = dailyDT
-        self.dailyID = dailyID
-        self.timeZoneOffset = timeZoneOffset
-    }
+    let currentTime: Int
     
     var temperatureString: String {
         let temp = String(format: "%.0f", temperature)
@@ -82,7 +53,7 @@ struct WeatherModel {
     }
     
     var descriptionString: String {
-        return description.capitalizingFirstLetter()
+        return description!.capitalizingFirstLetter()
     }
     
     var sunsriseString: String {
@@ -120,4 +91,9 @@ struct WeatherModel {
     var humidityString: String {
         return "\(humidity) %"
     }
+}
+
+struct Homie {
+    let cry: WeatherModel
+    let pipi: Int
 }

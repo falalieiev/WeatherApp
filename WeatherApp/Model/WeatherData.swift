@@ -15,11 +15,12 @@ struct WeatherData: Codable {
 }
 
 struct Weather: Codable {
-    let description: String
+    let description: String?
     let id: Int
 }
 
 struct Current: Codable {
+    let dt: Int
     let temp: Double
     let sunrise: Int
     let sunset: Int
